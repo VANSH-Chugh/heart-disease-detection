@@ -1,29 +1,19 @@
-# Use an official Python base image compatible with 3.12
-FROM python:3.12-slim
+# 1. Choose a lightweight Python base image
+FROM python:3.11-slim
 
-# Set environment variables
-ENV PYTHONDONTWRITEBYTECODE=1
-ENV PYTHONUNBUFFERED=1
-
-# Set working directory
+# 2. Set a working directory
 WORKDIR /app
 
-# Install system dependencies
-RUN apt-get update && apt-get install -y \
-    build-essential \
-    libgl1-mesa-glx \
-    && rm -rf /var/lib/apt/lists/*
-
-# Copy requirements and install
+# 3. Copy constraints/requirements and install dependencies
 COPY requirements.txt .
-RUN pip install --upgrade pip
-RUN pip install -r requirements.txt
+RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy the rest of the project
+# 4. Copy your application code
 COPY . .
 
-# Expose the port (Flask runs on 5000 by default)
+# 5. Expose the port your Flask app runs on
 EXPOSE 5000
 
-# Run the Flask app
-CMD ["python", "app.py"]
+# 6. Use Gunicorn for production‑grade serving
+CMD ["gunicorn", "--bind", "0.0.0.0:5000", "main:app"]
+

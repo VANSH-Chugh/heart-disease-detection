@@ -1,5 +1,5 @@
 from flask import Flask, render_template, request # importing library
-import jsonify
+from flask import jsonify
 import pickle # it helps to load the model
 import numpy as np
 from sklearn.preprocessing import StandardScaler
